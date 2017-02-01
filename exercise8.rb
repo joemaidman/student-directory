@@ -16,7 +16,7 @@ students = [
 ]
 end
 
-def input_students
+def input_students(months)
   print_to_center("Please enter the names of the students.")
   print_to_center("To finish, just hit return twice.")
   print_to_center("If no names are entered, I will use the default list.")
@@ -35,7 +35,7 @@ def input_students
       # and default to november with ||= syntax
       cohort ||= :november
     else
-      months = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december]
+
       # Look-up the user input in the list of allowed symbols (months of the year).
       # Unti it is valid, ask the user to re-enter
       while !months.include?(cohort.to_sym)
@@ -60,7 +60,10 @@ def input_students
 end
 
 def print_header
+  print_to_center("-------------")
+  print_to_center("-------------")
   print_to_center("The students of Villians Academy")
+  print_to_center("-------------")
   print_to_center("-------------")
 end
 
@@ -98,8 +101,33 @@ def print_to_center(message)
 puts message.center(50)
 end
 
+def print_by_cohort(students, months)
+  months.each do |cohort|
+    students_this_month = Array.new
+    students.each do |student|
+      if student[:cohort] == cohort
+        students_this_month.push(student)
+      end
+    end
+    print_to_center("-------------")
+    print_to_center("#{cohort.to_s.capitalize} (#{students_this_month.size} students)")
+    print_to_center("-------------")
+    if students_this_month.count > 0
+      print(students_this_month)
+    else
+      print_to_center("There are no students in the #{cohort.to_s.capitalize} cohort")
+    end
+  end
+end
+
 #nothing happens until we call the methods
-students = input_students
+months = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december]
+students = input_students(months)
 print_header
 print(students)
 print_footer(students)
+print_to_center("-------------")
+print_to_center("-------------")
+print_to_center("Students by cohort")
+print_to_center("-------------")
+print_by_cohort(students, months)
