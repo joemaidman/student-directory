@@ -1,4 +1,7 @@
-# put students into an array
+
+
+
+# put students into an array in case the user does not enter anything.
 def default_students
 
 students = [
@@ -26,17 +29,36 @@ def input_students
   name = gets.chomp
   # While the name is not empty, repeat this code
   while !name.empty? do
+    print_to_center("Please enter #{name}'s cohort.'")
+    # Get the cohort from the user.
+    cohort = gets.chomp
+    # If the string is empty from the users input, set it to nil
+    if cohort.empty?
+      cohort = nil
+      # and default to november with ||= syntax
+      cohort ||= :november
+    else
+      months = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december]
+      # Look-up the user input in the list of allowed symbols (months of the year).
+      # Unti it is valid, ask the user to re-enter
+      while !months.include?(cohort.to_sym)
+        print_to_center("Couldn't find the \'#{cohort}\' cohort, please check your spelling and case (all lower)!")
+        cohort = gets.chomp
+      end
+
+    end
     # Add the student to the array
-    students << {name: name, cohort: :november}
-    print_to_center("Now we have #{students.count} students")
+    students << {name: name, cohort: cohort.to_sym}
+    print_to_center("Now we have #{students.count} students.")
     # Get another name from the user
+    print_to_center("Please enter the next name.")
     name = gets.chomp
   end
-  # return the array of students
-
+  # Set students to default if the user has not entered anyone
   if students.count == 0
     students = default_students
   end
+  # return the array of students
   students
 end
 
@@ -74,7 +96,7 @@ end
 def print_footer(names)
 print_to_center("Overall, we have #{names.count} great students")
 end
-
+# A method that takes a string input and puts it to the screen, centered 50 characters from the edge
 def print_to_center(message)
 puts message.center(50)
 end
