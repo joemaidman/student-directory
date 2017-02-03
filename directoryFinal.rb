@@ -1,5 +1,7 @@
-# Using gsub as an alternative to chomp
-# put students into an array in case the user does not enter anything.
+# Setup global variables
+@students = []
+@defaultList = false
+@months = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december]
 def default_students
 
 students = [
@@ -17,43 +19,43 @@ students = [
 ]
 end
 
-@students = []
-
 def interactive_menu
-
-
   loop do
-    puts "What do you want to do?"
-    puts "1. Input the students"
-    puts "2. Show the students"
-    puts "9. Exit"
+    print_menu
+    process(gets.chomp)
+  end
+end
 
-    selection = gets.chomp
-
-    case selection
+def process(selection)
+  case selection
     when "1"
-      months = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december]
-      @students = input_students(months)
+      input_students
     when "2"
-      print_header
-      print(@students)
-      print_footer(@students)
+      show_students
     when "9"
       exit
     else
       "I didn't understand that command. Please try again."
-    end
   end
 end
 
+def print_menu
+  puts "What do you want to do?"
+  puts "1. Input the students"
+  puts "2. Show the students"
+  puts "9. Exit"
+end
 
+def show_students
+  print_header
+  print
+  print_footer
+end
 
-def input_students(months)
+def input_students
   puts("Please enter the names of the students.")
   puts("To finish, just hit return twice.")
   puts("If no names are entered, I will use the default list.")
-  # Create an empty array
-
   # Get the first name
   # Use gsub to substitute a string instead of chomp
   name = gets.gsub("\n","")
@@ -68,35 +70,29 @@ def input_students(months)
       # and default to november with ||= syntax
       cohort ||= :november
     else
-
-      # Look-up the user input in the list of allowed symbols (months of the year).
-      # Unti it is valid, ask the user to re-enter
-      while !months.include?(cohort.to_sym)
-        puts("Couldn't find the \'#{cohort}\' cohort, please check your spelling and case (all lower)!")
-        cohort = gets.gsub("\n","")
-      end
-
+      check_valid_month
     end
     # Add the student to the array
     @students << {name: name, cohort: cohort.to_sym}
     # Test if we have more than 1 students and set a variable to hold the last word
     student_plural = "student"
     if @students.count > 1
-    student_plural = "students"
+      student_plural = "students"
     end
     puts("Now we have #{@students.count} #{student_plural}.")
     # Get another name from the user
     puts("Please enter the next name.")
     name = gets.gsub("\n","")
   end
+  set_default_students
+end
+
+def set_default_students
   # Set students to default if the user has not entered anyone
   # Commented out code that sets the student list to the default if the user enters nobody
-  #if students.count == 0
-  #  students = default_students
-  #end
-  #
-  # return the array of students
-  @students
+  if @students.count == 0 && @defaultList == true
+    @students = default_students
+  end
 end
 
 def print_header
@@ -105,36 +101,46 @@ def print_header
   puts("-------------")
 end
 
-def print(students)
+def check_valid_month
+  # Look-up the user input in the list of allowed symbols (months of the year).
+  # Unti it is valid, ask the user to re-enter
+  while !@months.include?(cohort.to_sym)
+    puts("Couldn't find the \'#{cohort}\' cohort, please check your spelling and case (all lower)!")
+    cohort = gets.gsub("\n","")
+  end
+end
+
+def print
     count = 0
-    while count < students.count
-      puts("#{count + 1}. #{students[count][:name]} (#{students[count][:cohort]} cohort)")
+    while count < @students.count
+      puts("#{count + 1}. #{@students[count][:name]} (#{@students[count][:cohort]} cohort)")
       count += 1
     end
-
 end
 
-def print_by_first_letter(students, letter)
-  students.each_with_index() do |student, index|
+def print_by_first_letter(letter)
+  @students.each_with_index() do |student, index|
     if student[:name][0] == letter
-    puts("#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)")
+      puts("#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)")
     else
     end
   end
 end
 
-def print_by_character_count(students, count)
-  students.each_with_index() do |student, index|
+def print_by_character_count(count)
+  @students.each_with_index() do |student, index|
     if student[:name].length < count
-    puts("#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)")
+      puts("#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)")
     else
     end
   end
 end
 
-def print_footer(names)
-  if names.count > 0
-    puts("Overall, we have #{names.count} great students")
+def print_footer
+  if @students.count == 1
+    puts("Overall, we have #{@students.count} great student.")
+  elsif @students.count > 1
+    puts("Overall, we have #{@students.count} great students.")
   else
   puts("There are no students in the database :(")
   end
@@ -144,10 +150,10 @@ def print_to_center(message)
 puts message.center(50)
 end
 
-def print_by_cohort(students, months)
-  months.each do |cohort|
+def print_by_cohort
+  @months.each do |cohort|
     students_this_month = Array.new
-      students.each do |student|
+      @students.each do |student|
         if student[:cohort] == cohort
           students_this_month.push(student)
         end
@@ -164,6 +170,4 @@ def print_by_cohort(students, months)
 end
 
 #nothing happens until we call the methods
-months = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december]
-
 interactive_menu
