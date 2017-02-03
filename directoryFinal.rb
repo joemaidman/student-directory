@@ -1,6 +1,5 @@
 # Setup global variables
 @students = []
-@file_name = "students.csv"
 @defaultList = false
 @months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
 def default_students
@@ -23,7 +22,7 @@ end
 def interactive_menu
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
@@ -65,12 +64,12 @@ def input_students
   puts("If no names are entered, I will use the default list.")
   # Get the first name
   # Use gsub to substitute a string instead of chomp
-  name = gets.gsub("\n","")
+  name = STDIN.gets.gsub("\n","")
   # While the name is not empty, repeat this code
   while !name.empty? do
     puts("Please enter #{name}'s cohort.'")
     # Get the cohort from the user.
-    cohort = gets.gsub("\n","")
+    cohort = STDIN.gets.gsub("\n","")
     # If the string is empty from the users input, set it to nil
     if cohort.empty?
       cohort = nil
@@ -89,7 +88,7 @@ def input_students
     puts("Now we have #{@students.count} #{student_plural}.")
     # Get another name from the user
     puts("Please enter the next name.")
-    name = gets.gsub("\n","")
+    name = STDIN.gets.gsub("\n","")
   end
   set_default_students
 end
@@ -113,7 +112,7 @@ def check_valid_month(cohort)
   # Unti it is valid, ask the user to re-enter
   while !@months.include?(cohort.to_sym)
     puts("Couldn't find the \'#{cohort}\' cohort, please check your spelling and case!")
-    cohort = gets.gsub("\n","")
+    cohort = STDIN.gets.gsub("\n","")
   end
 end
 
@@ -176,9 +175,9 @@ def print_by_cohort
     end
 end
 
-def save_Students
+def save_Students()
   # Open the file for writing
-  file = File.open(@file_name, "w")
+  file = File.open("students.csv", "w")
   # Iterate over the array of students
   @students.each do |student|
     student_data = [student[:name], student[:cohort]]
@@ -187,10 +186,11 @@ def save_Students
     file.puts csv_line
   end
   file.close
+  puts "Student directory saved to students.csv."
 end
 
-def load_students
-  file = File.open(@file_name, "r")
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
     # Parallel assignment here
     name, cohort = line.chomp.split(',')
@@ -199,5 +199,18 @@ def load_students
   file.close
 end
 
+def try_load_students
+  filename = ARGV.first
+  return if filename.nil?
+  if File.exists?(filename)
+    load_students(filename)
+    puts "loaded #{@students.count} from #{filename}"
+  else
+    puts "Sorry, #{filename} dosen't exist."
+    exit
+  end
+end
+
 #nothing happens until we call the methods
+try_load_students
 interactive_menu
