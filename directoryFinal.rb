@@ -4,7 +4,7 @@
 @months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
 def default_students
 
-students = [
+@students = [
   {name: "Dr. Hannibal Lecter",cohort: :november,  hobby: :sport, weight: 87, age: 64},
   {name: "Darth Vader", cohort: :november,  hobby: :reading, weight: 87, age: 53},
   {name: "Nurse Ratched", cohort: :november,  hobby: :music, weight: 100, age: 42},
@@ -36,11 +36,21 @@ def process(selection)
       save_Students
     when "4"
       load_students
+    when "5"
+      load_default_students
     when "9"
       exit
     else
       "I didn't understand that command. Please try again."
   end
+end
+
+def load_default_students
+  puts "WARNING - This will overwrite all students currently loaded."
+  puts "Continue? y/n"
+  continue = STDIN.gets.chomp.downcase
+  default_students unless continue == "n"
+
 end
 
 def print_menu
@@ -49,6 +59,7 @@ def print_menu
   puts "2. Show the students"
   puts "3. Save the list to students.csv"
   puts "4. Load the list from students.csv"
+  puts "5. Load a default list of students"
   puts "9. Exit"
 end
 
