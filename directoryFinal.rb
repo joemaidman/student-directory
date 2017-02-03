@@ -1,7 +1,7 @@
 # Setup global variables
 @students = []
 @defaultList = false
-@months = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december]
+@months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
 def default_students
 
 students = [
@@ -32,6 +32,8 @@ def process(selection)
       input_students
     when "2"
       show_students
+    when "3"
+      save_Students
     when "9"
       exit
     else
@@ -43,6 +45,7 @@ def print_menu
   puts "What do you want to do?"
   puts "1. Input the students"
   puts "2. Show the students"
+  puts "3. Save the list to students.csv"
   puts "9. Exit"
 end
 
@@ -70,7 +73,7 @@ def input_students
       # and default to november with ||= syntax
       cohort ||= :november
     else
-      check_valid_month
+      check_valid_month(cohort)
     end
     # Add the student to the array
     @students << {name: name, cohort: cohort.to_sym}
@@ -101,11 +104,11 @@ def print_header
   puts("-------------")
 end
 
-def check_valid_month
+def check_valid_month(cohort)
   # Look-up the user input in the list of allowed symbols (months of the year).
   # Unti it is valid, ask the user to re-enter
   while !@months.include?(cohort.to_sym)
-    puts("Couldn't find the \'#{cohort}\' cohort, please check your spelling and case (all lower)!")
+    puts("Couldn't find the \'#{cohort}\' cohort, please check your spelling and case!")
     cohort = gets.gsub("\n","")
   end
 end
@@ -167,6 +170,19 @@ def print_by_cohort
         puts("There are no students in the #{cohort.to_s.capitalize} cohort")
       end
     end
+end
+
+def save_Students
+  # Open the file for writing
+  file = File.open("students.csv", "w")
+  # Iterate over the array of students
+  @students.each do |student|
+    student_data = [student[:name], student[:cohort]]
+    csv_line = student_data.join(",")
+    # puts is equivalent to STDOUT.puts
+    file.puts csv_line
+  end
+  file.close
 end
 
 #nothing happens until we call the methods
