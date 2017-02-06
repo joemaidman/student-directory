@@ -3,7 +3,7 @@
 @defaultList = false
 @months = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
 def default_students
-
+# A hash of default students which is an option for the user to load
 @students = [
   {name: "Dr. Hannibal Lecter",cohort: :november,  hobby: :sport, weight: 87, age: 64},
   {name: "Darth Vader", cohort: :november,  hobby: :reading, weight: 87, age: 53},
@@ -68,7 +68,7 @@ def show_students
   print
   print_footer
 end
-
+# This method is still toooo long, need to refactor
 def input_students
   puts("Please enter the names of the students.")
   puts("To finish, just hit return twice.")
@@ -154,6 +154,7 @@ def print_by_character_count(count)
 end
 
 def print_footer
+  puts("-------------")
   if @students.count == 1
     puts("Overall, we have #{@students.count} great student.")
   elsif @students.count > 1
@@ -161,6 +162,7 @@ def print_footer
   else
   puts("There are no students in the database :(")
   end
+  puts("-------------")
 end
 # A method that takes a string input and puts it to the screen, centered 50 characters from the edge
 def print_to_center(message)
