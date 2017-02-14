@@ -1,5 +1,5 @@
 # Refactoring File.Open to use code blocks
-# Setup global variables
+# Setup global variables.
 @students = []
 @defaultList = false
 @defaultFileName = "students.csv"
