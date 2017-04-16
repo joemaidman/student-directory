@@ -1,5 +1,5 @@
 # Student Directory
-The student directory ruby script that allows you to manage the list of student enrolled at Makers Academy.
+A student directory ruby script that allows you to manage the list of student enrolled at Makers Academy.
 
 ## Usage ##
 
